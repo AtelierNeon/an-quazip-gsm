@@ -30,6 +30,8 @@ option(QUAZIP_BZIP2_STDIO "Output BZIP2 errors to stdio" ON)
 option(QUAZIP_FETCH_LIBS "Enables fetching third-party libraries if not found" OFF)
 option(QUAZIP_FORCE_FETCH_LIBS "Enables fetching third-party libraries always" OFF)
 
+option(QUAZIP_WITH_SHARED_ZLIB "Build QuaZip with shared version of Zlib." OFF)
+
 # Set the default value of `${QUAZIP_QT_MAJOR_VERSION}`.
 # We search quietly for Qt6, Qt5 and Qt4 in that order.
 # Qt6 and Qt5 provide config files for CMake.
@@ -125,6 +127,11 @@ if(NOT QUAZIP_QT_ZLIB_USED)
 
       set(QUAZIP_LIB_LIBRARIES ${QUAZIP_LIB_LIBRARIES} ${ZLIB_LIBRARY})
     else()
+      if (QUAZIP_WITH_SHARED_ZLIB)
+        set(ZLIB_USE_STATIC_LIBS OFF)
+      else()
+        set(ZLIB_USE_STATIC_LIBS ON)
+      endif()
       find_package(SiblingZLIB)
       if(NOT ZLIB_FOUND)
         find_package(ZLIB REQUIRED)
